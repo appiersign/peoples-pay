@@ -1,11 +1,11 @@
 {
-    "name": "appiersign/people-pay",
+    "name": "appiersign/peoples-pay",
     "description": "People Pay Payment API",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Appiersign\\PeoplePay\\": "src/"
+            "Appiersign\\PeoplesPay\\": "src/"
         }
     },
     "authors": [
@@ -16,8 +16,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": ">=7.3",
-        "guzzlehttp/guzzle": "^7.4"
+        "php": ">=7.3"
     },
     "require-dev": {
         "phpunit/phpunit": "9.*"

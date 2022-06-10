@@ -1,23 +1,19 @@
 <?php
 
-namespace Appiersign\PeoplePay;
+namespace Appiersign\PeoplesPay;
 
-use phpDocumentor\Reflection\Types\This;
-
-class PeoplePay
+class PeoplesPay
 {
     private $apiKey;
     private $merchantId;
     private $bearerToken;
-    private $transactionId;
     private $baseUrl;
 
-    public function __construct($baseUrl, $apiKey, $merchantId, $transactionId = null)
+    public function __construct($baseUrl, $apiKey, $merchantId)
     {
         $this->baseUrl = $baseUrl;
         $this->apiKey = $apiKey;
         $this->merchantId = $merchantId;
-        $this->transactionId = $transactionId;
     }
 
     private function httpRequest($method, $endpoint, $bearerToken = '', $data = [])
@@ -70,8 +66,8 @@ class PeoplePay
     public function getBearerToken()
     {
         $request = $this->postRequest('token/get', '', [
-            'merchantId' => '62976b446449d8d3b9708b94',
-            'apikey' => 'f202925d-36e9-49e1-9649-af11e87f13d3'
+            'merchantId' => $this->merchantId,
+            'apikey' => $this->apiKey
         ]);
 
         return $this->processRequest($request);
@@ -87,10 +83,11 @@ class PeoplePay
         return $this->internalErrorResponse();
     }
 
-    public function collect($accountNumber, $accountIssuer, $amount, $callbackUrl, $description)
+    public function collectMobileMoney($accountNumber, $accountIssuer, $amount, $reference, $callbackUrl, $description)
     {
         return $this->postWithBearer('collectmoney', [
             'account_number' => $accountNumber,
+            'account_name' => $reference,
             'account_issuer' => $accountIssuer,
             'amount' => $amount,
             'callbackUrl' => $callbackUrl,
@@ -111,7 +108,7 @@ class PeoplePay
         return $this->jsonToArray($response);
     }
 
-    public function getAccountName($accountNumber, $accountIssuer)
+    public function getMobileMoneyAccountName($accountNumber, $accountIssuer)
     {
         return $this->postWithBearer('enquiry', [
             'account_number' => $accountNumber,
@@ -119,9 +116,15 @@ class PeoplePay
         ]);
     }
 
-    public function disburse()
+    public function disburseMobileMoney($accountNumber, $accountIssuer, $amount, $externalTransactionId, $description)
     {
-
+        return $this->postWithBearer('disburse', [
+            'account_number' => $accountNumber,
+            'account_issuer' => $accountIssuer,
+            'amount' => $amount,
+            'externalTransactionId' => $externalTransactionId,
+            'description' => $description
+        ]);
     }
 
     public function checkStatus($transactionId)
